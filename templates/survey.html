@@ -20,7 +20,7 @@
     function save_data(data) {
       data.random_number_id = random_number_id;
 
-      fetch('http://localhost:5000/save_data', {
+      fetch('/save_data', {
         method:'POST',
         body: JSON.stringify(data),
         headers: {
