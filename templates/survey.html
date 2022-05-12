@@ -3,14 +3,33 @@
   <head>
     <title>My experiment</title>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <script src="https://unpkg.com/jspsych@7.2.1"></script>
-    <script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response@1.1.0"></script>
     <script src="https://unpkg.com/@jspsych/plugin-initialize-microphone@1.0.0"></script> 
     <script src="https://unpkg.com/@jspsych/plugin-html-audio-response@1.0.0"></script>
     <script src="https://unpkg.com/@jspsych/plugin-image-button-response@1.1.0"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-html-button-response@1.1.0"></script>
     <script src="https://unpkg.com/@jspsych/plugin-survey@0.1.1"></script>
     <link href="https://unpkg.com/jspsych@7.2.1/css/jspsych.css" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" href="https://unpkg.com/@jspsych/plugin-survey@0.1.1/css/survey.css">
+    <style type="text/css">
+      .jspsych-content, .sv_body {
+        font-size: 1.5em;
+        line-height: 1em;
+      }
+
+      .jspsych-btn {
+        font-size: 1em;
+      }
+
+      #playback {
+        width: 100% ;
+      }
+
+      #jspsych-image-button-response-stimulus {
+        width: 90%;
+      }
+    </style>
   </head>
   <body></body>
   <script type="text/javascript">
@@ -39,6 +58,8 @@
 
 
     const jsPsych = initJsPsych({
+
+      // 
       on_trial_finish: function(data) {
         console.log('A trial just ended.');
         console.log(JSON.stringify(data));
@@ -51,11 +72,22 @@
         if (data.trial_type == "survey" || data.trial_type == "html-audio-response" ) {
           save_data(data);
         }
+      },
+
+      // 整個實驗做完後
+      on_finish: function(data) {
+        window.location.href = '/result?id=' + random_number_id;
       }
     });
 
 
-    var survey_trial = {
+    const welcome_trial = {
+      type: jsPsychHtmlButtonResponse,
+      stimulus: '<p>歡迎進入本測驗</p>',
+      choices: ['問卷開始'],
+    };
+
+    const survey_trial = {
       type: jsPsychSurvey,
       pages: [
         [
@@ -70,7 +102,7 @@
             required: true
           }, 
           {
-            type: 'multi-select',
+            type: 'drop-down',
             prompt: "請選擇年齡範圍", 
             name: 'age', 
             options: ['21~30', '31~40', '41~50', '51~60', '61~70', '71~80'], 
@@ -84,28 +116,30 @@
 
     const get_microphone_trial = {
       type: jsPsychInitializeMicrophone,
-      device_select_message: "請選擇你要使用的麥克風裝置",
+      device_select_message: "<p>請選擇你要使用的麥克風裝置</p>",
       button_label: "確認"
     };
 
-    var show_img_trial = {
+    const show_img_trial = {
     type: jsPsychImageButtonResponse,
     stimulus: 'https://i.imgur.com/gSPz2ZM.jpeg',
     choices: ['開始錄音'],
     prompt: "<p>請仔細看圖片，按下「開始錄音」鍵後便會直接開始錄音。</p>"
 };
 
-    var record_trial = {
+    const record_trial = {
     type: jsPsychHtmlAudioResponse,
     stimulus: `
     <p>請以族語描述下圖情境：</p>
     <img src="https://i.imgur.com/gSPz2ZM.jpeg" width="90%" >`,
     recording_duration: 30000,
     allow_playback: true,
-    done_button_label: "停止錄音，下一頁"
+    done_button_label: "停止錄音，下一頁",
+    record_again_button_label: "重錄一次",
+    accept_button_label: "錄音完成，下一頁",
 };
 
-    var timeline = [survey_trial, get_microphone_trial, show_img_trial, record_trial];
+    const timeline = [ welcome_trial, survey_trial, get_microphone_trial, show_img_trial, record_trial];
 
     jsPsych.run(timeline);
   </script>
