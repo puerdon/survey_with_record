@@ -28,7 +28,7 @@ def save_data():
                 "age": age
             }
             
-            os.mkdir(f'data/{random_number_id}')
+            os.mkdir(f'./data/{random_number_id}')
 
             with open(f'./data/{random_number_id}/data.json', 'w') as f:
                 json.dump(data, f, ensure_ascii=False)
