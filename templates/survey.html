@@ -8,7 +8,9 @@
     <script src="https://unpkg.com/@jspsych/plugin-initialize-microphone@1.0.1"></script> 
     <!-- <script src="https://unpkg.com/@jspsych/plugin-html-audio-response@1.0.1"></script> -->
     <script src="js/html-audio-response.index.browser.min.js"></script>
-    <script src="https://unpkg.com/@jspsych/plugin-image-button-response@1.1.1"></script>
+    <script src="js/image-button-response.index.browser.min.js"></script>
+
+    <!-- <script src="https://unpkg.com/@jspsych/plugin-image-button-response@1.1.1"></script> -->
     <script src="https://unpkg.com/@jspsych/plugin-html-button-response@1.1.1"></script>
     <script src="https://unpkg.com/@jspsych/plugin-survey@0.2.0"></script>
     <script src="https://unpkg.com/@jspsych/plugin-browser-check@1.0.1"></script>
@@ -68,12 +70,12 @@
       // 
       on_trial_finish: function(data) {
         console.log('A trial just ended.');
-        console.log(JSON.stringify(data));
+        // console.log(JSON.stringify(data));
         console.log(`trial_type: ${data.trial_type}`);
 
 
-        console.log('get all data:');
-        console.log(jsPsych.data.get());
+        // console.log('get all data:');
+        // console.log(jsPsych.data.get());
 
 
         if (data.trial_type == "survey" || data.trial_type == "html-audio-response" ) {
@@ -84,7 +86,7 @@
             var now_string = now.toISOString().substring(0,16).replace("T", "_").replace(":", "");
             unique_id = `${now_string}_${data.response.name}`
           }
-          console.log('!!!');
+          // console.log('!!!');
           save_data(data);
         }
       },
@@ -145,111 +147,42 @@
 
     const show_img_trial_1 = {
         type: jsPsychImageButtonResponse,
-        stimulus: 'images/A1_直.png',
-        choices: ['開始錄音'],
-        prompt: "<p>請仔細看圖片，按下「開始錄音」鍵後便會直接開始錄音。</p>"
+        stimulus: '',
+        choices: ['結束本問卷'],
+        prompt: "<p>問卷填寫完璧，感謝您的配合！</p>"
     };
 
-    const show_img_trial_2 = {
-        type: jsPsychImageButtonResponse,
-        stimulus: 'images/B1_直.png',
-        choices: ['開始錄音'],
-        prompt: "<p>請仔細看圖片，按下「開始錄音」鍵後便會直接開始錄音。</p>"
-    };
-
-    const show_img_trial_3 = {
-        type: jsPsychImageButtonResponse,
-        stimulus: 'images/C1_直.png',
-        choices: ['開始錄音'],
-        prompt: "<p>請仔細看圖片，按下「開始錄音」鍵後便會直接開始錄音。</p>"
-    };
-
-    const record_trial_1 = {
-        type: jsPsychHtmlAudioResponse,
-        stimulus: ``,
-        stimulus_duration: null,
-        recording_duration: 30000,
-        allow_playback: true,
-        done_button_label: "停止錄音，下一頁",
-        record_again_button_label: "重錄一次",
-        accept_button_label: "錄音完成，下一頁",
-        show_button_label: "開始錄音",
-        show_start_button: true,
-        show_textarea: true,
-        image_name: 'A1_直.png',
-        // on_finish: function() {
-        //     const message = document.getElementById('w3review');
-        //     console.log(message);
-        //     console.log(message.value);
-        // }
-    };
-
-    const record_trial_2 = {
-        type: jsPsychHtmlAudioResponse,
-        stimulus: ``,
-        stimulus_duration: null,
-        recording_duration: 30000,
-        allow_playback: true,
-        done_button_label: "停止錄音，下一頁",
-        record_again_button_label: "重錄一次",
-        accept_button_label: "錄音完成，下一頁",
-        show_button_label: "開始錄音",
-        show_start_button: true,
-        show_textarea: true,
-        image_name: 'B1_直.png',
-        // on_finish: function() {
-        //     const message = document.getElementById('w3review');
-        //     console.log(message);
-        //     console.log(message.value);
-        // }
-    };
-
-    const record_trial_3 = {
-        type: jsPsychHtmlAudioResponse,
-        stimulus: ``,
-        stimulus_duration: null,
-        recording_duration: 30000,
-        allow_playback: true,
-        done_button_label: "停止錄音，下一頁",
-        record_again_button_label: "重錄一次",
-        accept_button_label: "錄音完成，下一頁",
-        show_button_label: "開始錄音",
-        show_start_button: true,
-        show_textarea: true,
-        image_name: 'C1_直.png',
-        // on_finish: function() {
-        //     const message = document.getElementById('w3review');
-        //     console.log(message);
-        //     console.log(message.value);
-        // }
-    };
+  
 
     let file_list = ['01_A1', '02_B1', '03_C1', '04_D1', '05_A2', '06_B2', '07_C2', '08_D2', '09_A3', '10_A4', '11_B3', '12_C3', '13_D3', '14_D4'];
 
     function img_name_to_trial(image_name) {
-      var show_img = {
-        type: jsPsychImageButtonResponse,
-        stimulus: `images/${image_name}.png`,
-        choices: ['開始錄音'],
-        prompt: "<p>請仔細看圖片，按下「開始錄音」鍵後便會直接開始錄音。</p>"
-      }
+      // var show_img = {
+      //   type: jsPsychImageButtonResponse,
+      //   stimulus: `images/${image_name}.png`,
+      //   choices: ['繼續'],
+      //   prompt_above: "<p>請仔細看下面的圖片，看完後請按下「繼續」鍵。</p>",
+      //   // render_on_canvas: false
+      // }
 
       var record_trial = {
         type: jsPsychHtmlAudioResponse,
-        stimulus: ``,
+        stimulus: `請先仔細看下面的漫畫：`,
         stimulus_duration: null,
         recording_duration: 30000,
         allow_playback: true,
-        done_button_label: "停止錄音，下一頁",
+        done_button_label: "停止錄音",
         record_again_button_label: "重錄一次",
-        accept_button_label: "錄音完成，下一頁",
+        accept_button_label: "填答確認無誤，下一題",
         show_button_label: "開始錄音",
         show_start_button: true,
         show_textarea: true,
         image_name: `${image_name}.png`,
       }
-      var result = [show_img, record_trial]
-      console.log(result)
+      // var result = [show_img, record_trial]
+      var result = [record_trial]
+
+      // console.log(result)
       return result
     }
 
@@ -260,12 +193,12 @@
       trials = trials.concat(r)
     }
 
-    console.log(trials)
+    // console.log(trials)
     // const timeline = [ welcome_trial, browser_check_trial, survey_trial, get_microphone_trial, show_img_trial_1, record_trial_1, show_img_trial_2, record_trial_2, show_img_trial_3, record_trial_3, show_img_trial_1];
     let timeline = [welcome_trial, browser_check_trial, survey_trial, get_microphone_trial]
     timeline = timeline.concat(trials)
     timeline = timeline.concat([show_img_trial_1])
-    console.log(timeline)
+    // console.log(timeline)
     jsPsych.run(timeline);
   </script>
 </html>
