@@ -37,6 +37,8 @@ def save_data():
 
         # 如果是得到 html-audio-response 的
         elif request.json["trial_type"] == "html-audio-response":
+
+                print(request.json)
                 # step 1: 寫入音檔
                 audio_base64_string = request.json['response']
                 audiofile = base64.b64decode(bytes(audio_base64_string, 'utf-8'))
