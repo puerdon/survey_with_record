@@ -34,6 +34,14 @@
       #jspsych-image-button-response-stimulus {
         width: 90%;
       }
+
+      #start-trial, #continue {
+        background-color: #48c78e;
+      }
+
+      #finish-trial, #record-again {
+        background-color: #f18da1;
+      }
     </style>
   </head>
   <body></body>
@@ -78,10 +86,10 @@
         // console.log(jsPsych.data.get());
 
 
-        if (data.trial_type == "survey" || data.trial_type == "html-audio-response" ) {
+        if (data.trial_type == "survey" || data.trial_type == "html-audio-response" || data.trial_type == "browser-check") {
 
           // 如果是填寫姓名那一頁，要把姓名當作id
-          if (data.trial_index == 2) {
+          if (data.trial_index == 1) {
             var now = new Date();
             var now_string = now.toISOString().substring(0,16).replace("T", "_").replace(":", "");
             unique_id = `${now_string}_${data.response.name}`
@@ -92,9 +100,9 @@
       },
 
       // 整個實驗做完後
-      on_finish: function(data) {
-        window.location.href = '/result?id=' + unique_id;
-      }
+      // on_finish: function(data) {
+      //   window.location.href = '/result?id=' + unique_id;
+      // }
     });
 
 
@@ -149,7 +157,7 @@
         type: jsPsychImageButtonResponse,
         stimulus: '',
         choices: ['結束本問卷'],
-        prompt: "<p>問卷填寫完璧，感謝您的配合！</p>"
+        prompt: "<p>問卷填寫完畢，感謝您的配合！</p>"
     };
 
   
@@ -195,7 +203,7 @@
 
     // console.log(trials)
     // const timeline = [ welcome_trial, browser_check_trial, survey_trial, get_microphone_trial, show_img_trial_1, record_trial_1, show_img_trial_2, record_trial_2, show_img_trial_3, record_trial_3, show_img_trial_1];
-    let timeline = [welcome_trial, browser_check_trial, survey_trial, get_microphone_trial]
+    let timeline = [welcome_trial, survey_trial, browser_check_trial, get_microphone_trial]
     timeline = timeline.concat(trials)
     timeline = timeline.concat([show_img_trial_1])
     // console.log(timeline)

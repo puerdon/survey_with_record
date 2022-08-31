@@ -38,26 +38,40 @@ def save_data():
         # 如果是得到 html-audio-response 的
         elif request.json["trial_type"] == "html-audio-response":
 
-                # print(request.json)
-                # step 1: 寫入音檔
-                audio_base64_string = request.json['response']
-                audiofile = base64.b64decode(bytes(audio_base64_string, 'utf-8'))
-                image_name = request.json['image_name'].rstrip(".png")
+            # print(request.json)
+            # step 1: 寫入音檔
+            audio_base64_string = request.json['response']
+            audiofile = base64.b64decode(bytes(audio_base64_string, 'utf-8'))
+            image_name = request.json['image_name'].rstrip(".png")
 
-                with open(f'./data/{unique_id}/{image_name}.wav', 'wb') as f:
-                    f.write(audiofile)
-                
-                # step 2: 寫入文字檔
-                with open(f'./data/{unique_id}/data.json', 'r') as f:
-                    data = json.load(f)
-                    data[image_name] = request.json['textarea']
+            with open(f'./data/{unique_id}/{image_name}.wav', 'wb') as f:
+                f.write(audiofile)
+            
+            # step 2: 寫入文字檔
+            with open(f'./data/{unique_id}/data.json', 'r') as f:
+                data = json.load(f)
+                data[image_name] = request.json['textarea']
 
-                with open(f'./data/{unique_id}/data.json', 'w') as f:
-                    json.dump(data, f, ensure_ascii=False)
+            with open(f'./data/{unique_id}/data.json', 'w') as f:
+                json.dump(data, f, ensure_ascii=False)
 
-                return jsonify({"status": "success"})
+            return jsonify({"status": "success"})
 
-                pass
+        # 如果是得到 html-audio-response 的
+        elif request.json["trial_type"] == "browser-check":
+
+            # step 2: 寫入文字檔
+            with open(f'./data/{unique_id}/data.json', 'r') as f:
+                data = json.load(f)
+                data['browser_check'] = {}
+                for k in request.json:
+                    data['browser_check'][k] = request.json[k]
+
+            with open(f'./data/{unique_id}/data.json', 'w') as f:
+                json.dump(data, f, ensure_ascii=False)
+
+            return jsonify({"status": "success"})
+
     return None
 
 
