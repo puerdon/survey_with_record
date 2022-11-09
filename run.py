@@ -23,9 +23,32 @@ def save_data():
             # print(request.json)
             name = request.json['response']['name']
             age = request.json['response']['age']
+            gender = request.json['response']['gender']
+            primary_lang = request.json['response']['primary_lang']
+            parent_lang = request.json['response']['parent_lang']
+            dialect = request.json['response']['dialect']
+            group_name = request.json['response']['group_name']
+            place = request.json['response']['place']
+            outside_village_time = request.json['response']['outside_village_time']
+            most_freq_lang = request.json['response']['most_freq_lang']
+            freq = request.json['response']['freq']
+            with_whom = request.json['response']['with_whom']
+            other = request.json['response']['other']
+
             data = {
                 "name": name,
-                "age": age
+                "age": age,
+                "gender": gender,
+                "primary_lang": primary_lang,
+                "parent_lang": parent_lang,
+                "dialect": dialect,
+                "group_name": group_name,
+                "place": place,
+                "outside_village_time": outside_village_time,
+                "most_freq_lang": most_freq_lang,
+                "freq": freq,
+                "with_whom": with_whom,
+                "other": other
             }
             
             os.mkdir(f'./data/{unique_id}')

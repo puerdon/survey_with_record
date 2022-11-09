@@ -19,13 +19,48 @@
     <link rel="stylesheet" href="https://unpkg.com/@jspsych/plugin-survey@0.2.0/css/survey.css">
     <style type="text/css">
       .jspsych-content, .sv_body {
-        font-size: 1.5em;
+        font-size: 1em;
         line-height: 1em;
       }
 
       .jspsych-btn {
         font-size: 1em;
       }
+
+      /* 知情同意頁面 */
+      #jspsych-html-button-response-stimulus h1 {
+        font-size: 1.5em;
+        /*padding: 1em 0 0.5em 0;*/
+      }
+
+      #jspsych-html-button-response-stimulus p {
+        padding: 1em 0;
+      }
+
+      #jspsych-html-button-response-stimulus ul {
+        padding-inline-start: 10px;
+      }
+
+      #jspsych-html-button-response-stimulus li {
+        font-size: 0.8em;
+        margin: 1em;
+        text-align: left;
+      } 
+
+      #jspsych-html-button-response-stimulus h3 {
+        color: blue;
+        line-height: 1.2em;
+      } 
+
+      #jspsych-html-button-response-btngroup button {
+        margin: 1em 0 1.5em 0;
+      }
+
+      .sv_main .sv_container .sv_body .sv_p_root .sv_q input:not([type=button]):not([type=reset]):not([type=submit]):not([type=image]):not([type=checkbox]):not([type=radio]) {
+        width: 100%;
+      }
+
+      /*   */
 
       #playback {
         width: 100% ;
@@ -42,9 +77,16 @@
       #finish-trial, #record-again {
         background-color: #f18da1;
       }
+
+      textarea {
+        width: 100%;
+      }
+
     </style>
   </head>
-  <body></body>
+  <body>
+    
+  </body>
   <script type="text/javascript">
 
     // var unique_id = Math.floor(Math.random()*90000000) + 10000000;
@@ -71,45 +113,10 @@
       });
     }
 
-
-
-    const jsPsych = initJsPsych({
-
-      // 
-      on_trial_finish: function(data) {
-        console.log('A trial just ended.');
-        // console.log(JSON.stringify(data));
-        console.log(`trial_type: ${data.trial_type}`);
-
-
-        // console.log('get all data:');
-        // console.log(jsPsych.data.get());
-
-
-        if (data.trial_type == "survey" || data.trial_type == "html-audio-response" || data.trial_type == "browser-check") {
-
-          // 如果是填寫姓名那一頁，要把姓名當作id
-          if (data.trial_index == 1) {
-            var now = new Date();
-            var now_string = now.toISOString().substring(0,16).replace("T", "_").replace(":", "");
-            unique_id = `${now_string}_${data.response.name}`
-          }
-          // console.log('!!!');
-          save_data(data);
-        }
-      },
-
-      // 整個實驗做完後
-      // on_finish: function(data) {
-      //   window.location.href = '/result?id=' + unique_id;
-      // }
-    });
-
-
     const welcome_trial = {
       type: jsPsychHtmlButtonResponse,
-      stimulus: '<p>歡迎進入本測驗</p>',
-      choices: ['問卷開始'],
+      stimulus: '<h1>問卷知情說明頁</h1><p>感謝您抽空填寫本問卷！</p><ul><li>本問卷是由國科會補助語言學研究計畫「泰雅語的偏向性問句與跨語言比較」的調查問卷。問卷目的為調查年滿四十歲的台灣南島語母語者者如何表達各種句型。</li><li>問卷內容：您會看到各種以圖畫描述的情境，您需要針對每個不同的情境來提供你覺得最自然的說法，我們會請您錄音，您也可以另外提供文字書寫。</li><li>作答不限時間，預計每份問卷約花費20-30分鐘。</li><li>每人僅能作答一次。</li><li>為感謝您撥空參與，成功送出問卷後您可以獲得100-200元酬勞：僅錄音可獲得100元酬勞，若也提供文字書寫可獲得200元酬勞。請在問卷最後的頁面留下您的個人資料，您的個人資料僅為酬勞匯款與報帳使用，將完全保密。</li><li>若您想詢問本問卷內容，或有興趣參與更多的語法研究，歡迎聯絡主持人：中研院語言所助研究員 陳思瑋<br>電話：02-26525042  電子郵件：sihweichen@gate.sinica.edu.tw。</li><li>本問卷作答採不記名及無法辨識個人資訊的方式。與此研究相關的學術發表將採整體分析，您不會被辨識出，亦無衍生的商業利益。您可自由決定是否填寫，亦可中途退出問卷，無需感到壓力。</li></ul><p>若您有關於參與研究的權益或申訴意見，請聯絡中央研究院人文社會科學研究倫理委員會<br>電話：02-27898722，電子郵件：irb@gate.sinica.edu.tw。</p><h3>如同意填寫，請點選下方「點此開始問卷」按鈕</h3>',
+      choices: ['點此開始問卷'],
     };
 
     const browser_check_trial = {
@@ -138,12 +145,84 @@
             type: 'drop-down',
             prompt: "請選擇年齡範圍", 
             name: 'age', 
-            options: ['21~30', '31~40', '41~50', '51~60', '61~70', '71~80'], 
+            options: ['40~45', '46~50', '51~55', '56~60', '61~65', '66~70', '71~75'], 
             required: true,
-          }
+          },
+          {
+            type: 'drop-down',
+            prompt: "性別", 
+            name: 'gender', 
+            options: ['男生', '女生'], 
+            required: true,
+          },
+          {
+            type: 'drop-down',
+            prompt: "請問泰雅語是否為您的母語？（您可以有多個母語）", 
+            name: 'primary_lang', 
+            options: ['是', '否'], 
+            required: true,
+          },
+          {
+            type: 'drop-down',
+            prompt: "請問您的父母親平常使用的語言是不是泰雅語？", 
+            name: 'parent_lang', 
+            options: ['是，父母都使用泰雅語', '不是，只有父親使用', '不是，只有母親使用', '父母都不常使用'], 
+            required: true,
+          },
+          {
+            type: 'drop-down',
+            prompt: "請問您的方言屬於官方認定的哪一個？", 
+            name: 'dialect', 
+            options: ['賽考利克泰雅語', '澤敖利泰雅語', '汶水泰雅語', '萬大泰雅語', '四季泰雅語', '宜蘭澤敖利泰雅語'], 
+            required: true,
+          },
+          {
+            type: 'text',
+            prompt: "請問您一般如何稱呼您的方言或族群？（例如：Gogan）", 
+            name: 'group_name', 
+            required: true,
+          },
+          {
+            type: 'text',
+            prompt: "請問您來自哪一個鄉鎮與部落？（例如：桃園復興Zihing部落）", 
+            name: 'place', 
+            required: true,
+          },
+          {
+            type: 'text',
+            prompt: "請問您成長過程是否有在部落外居住？大約多久時間？（請填寫「無」或者「有，___年」）", 
+            name: 'outside_village_time', 
+            required: true,
+          },
+          {
+            type: 'text',
+            prompt: "請問您平常最常使用的語言是什麼？", 
+            name: 'most_freq_lang', 
+            required: true,
+          },
+          {
+            type: 'drop-down',
+            prompt: "請問您使用泰雅語的頻率？", 
+            name: 'freq', 
+            options: ['每天', '偶爾', '很少'], 
+            required: true,
+          },
+          {
+            type: 'text',
+            prompt: "請問您最常跟誰使用泰雅語？（例如：父親、兄弟、小孩...等）", 
+            name: 'with_whom', 
+            required: true,
+          },
+          {
+            type: 'text',
+            prompt: "如果您有其他與您的語言背景或使用相關的資訊，也歡迎提供：", 
+            name: 'other', 
+            required: false,
+          },
         ]
       ],
       button_label_finish: '下一頁',
+      required_error: '本題尚未作答'
     };
 
 
@@ -206,7 +285,48 @@
     let timeline = [welcome_trial, survey_trial, browser_check_trial, get_microphone_trial]
     timeline = timeline.concat(trials)
     timeline = timeline.concat([show_img_trial_1])
+
+    // let progress = 0;
+
+    const jsPsych = initJsPsych({
+      show_progress_bar: true,
+      message_progress_bar: `問卷完成進度`,
+      // 
+      on_trial_finish: function(data) {
+        console.log('A trial just ended.');
+        // console.log(JSON.stringify(data));
+        console.log(`trial_type: ${data.trial_type}`);
+
+
+        // console.log('get all data:');
+        // console.log(jsPsych.data.get());
+
+
+        if (data.trial_type == "survey" || data.trial_type == "html-audio-response" || data.trial_type == "browser-check") {
+
+          // 如果是填寫姓名那一頁，要把姓名當作id
+          if (data.trial_index == 1) {
+            var now = new Date();
+            var now_string = now.toISOString().substring(0,16).replace("T", "_").replace(":", "");
+            unique_id = `${now_string}_${data.response.name}`
+          }
+          // console.log('!!!');
+          save_data(data);
+        }
+
+        // progress++;
+      },
+
+      // 整個實驗做完後
+      // on_finish: function(data) {
+      //   window.location.href = '/result?id=' + unique_id;
+      // }
+    });
+
+
     // console.log(timeline)
     jsPsych.run(timeline);
+
+
   </script>
 </html>
