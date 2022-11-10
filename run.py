@@ -21,7 +21,7 @@ def save_data():
         # 如果是得到 survey 的
         if request.json["trial_type"] == "survey": 
             # print(request.json)
-            name = request.json['response']['name']
+            # name = request.json['response']['name']
             age = request.json['response']['age']
             gender = request.json['response']['gender']
             primary_lang = request.json['response']['primary_lang']
@@ -29,14 +29,14 @@ def save_data():
             dialect = request.json['response']['dialect']
             group_name = request.json['response']['group_name']
             place = request.json['response']['place']
-            outside_village_time = request.json['response']['outside_village_time']
+            village_time = request.json['response']['village_time']
             most_freq_lang = request.json['response']['most_freq_lang']
             freq = request.json['response']['freq']
             with_whom = request.json['response']['with_whom']
             other = request.json['response']['other']
 
             data = {
-                "name": name,
+                # "name": name,
                 "age": age,
                 "gender": gender,
                 "primary_lang": primary_lang,
@@ -44,7 +44,7 @@ def save_data():
                 "dialect": dialect,
                 "group_name": group_name,
                 "place": place,
-                "outside_village_time": outside_village_time,
+                "village_time": village_time,
                 "most_freq_lang": most_freq_lang,
                 "freq": freq,
                 "with_whom": with_whom,
