@@ -13,13 +13,13 @@ if not os.path.isdir('./data'):
 
 @app.route("/save_data", methods=['POST'])
 def save_data():
-    # print(request.json)
+    print(request.json)
     if request.json is not None:
 
         unique_id = request.json['unique_id']
 
-        # 如果是得到 survey 的
-        if request.json["trial_type"] == "survey": 
+        # 如果是一開始的基本資料
+        if 'age' in request.json['response']: 
             # print(request.json)
             # name = request.json['response']['name']
             age = request.json['response']['age']
@@ -52,6 +52,34 @@ def save_data():
             }
             
             os.mkdir(f'./data/{unique_id}')
+
+            with open(f'./data/{unique_id}/data.json', 'w') as f:
+                json.dump(data, f, ensure_ascii=False)
+
+            return jsonify({"status": "success"})
+
+        elif 'bank_name' in request.json['response']: 
+
+            'bank_real_name': request.json['response']['bank_real_name'] 
+            'id_card': request.json['response']['id_card']  
+            'address': request.json['response']['address'] 
+            'bank_name': request.json['response']['bank_name'] 
+            'bank_branch': request.json['response']['bank_branch']
+            'bank_id': request.json['response']['bank_id'] 
+
+
+            bank_data = {
+                'bank_real_name': request.json['response']['bank_real_name'] 
+                'id_card': request.json['response']['id_card']  
+                'address': request.json['response']['address'] 
+                'bank_name': request.json['response']['bank_name'] 
+                'bank_branch': request.json['response']['bank_branch']
+                'bank_id': request.json['response']['bank_id'] 
+            }
+            
+            with open(f'./data/{unique_id}/data.json', 'r') as f:
+                d = json.load(f)
+                d['bank'] = bank_data
 
             with open(f'./data/{unique_id}/data.json', 'w') as f:
                 json.dump(data, f, ensure_ascii=False)

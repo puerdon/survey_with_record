@@ -25,8 +25,20 @@
 
       @media screen and (min-width:900px) {
         .jspsych-content, .sv_body {
-          font-size: 2em;
+          font-size: 1.5em;
           line-height: 1em;
+        }
+
+        .jspsych-progressbar-container {
+          padding: 13px 0;
+        }
+
+        .jspsych-progressbar-container span {
+          font-size: 1.5em;
+        }
+
+        #jspsych-html-audio-response-stimulus img {
+          width: 50%;
         }
       }
 
@@ -63,6 +75,8 @@
         margin: 1em 0 1.5em 0;
       }
 
+
+
       .sv_main .sv_container .sv_body .sv_p_root .sv_q input:not([type=button]):not([type=reset]):not([type=submit]):not([type=image]):not([type=checkbox]):not([type=radio]) {
         width: 100%tw;
       }
@@ -97,8 +111,8 @@
   <script type="text/javascript">
 
     // var unique_id = Math.floor(Math.random()*90000000) + 10000000;
-    var unique_id = Math.floor(Math.random()*90000000) + 10000000;
-
+    var now = new Date();
+    var unique_id = now.toISOString().replace("T", "_").replaceAll(":", "").replace("Z", "").replace(".", "_");
 
     function save_data(data) {
       console.log('save_data() called');
@@ -133,7 +147,7 @@
       },
       exclusion_message: (data) => {
         if (!data.microphone) {
-          return `<p>您目前的裝置偵測不到麥克風。請插入麥克風裝置，或改用有麥克風設備的裝置（例如手機）進行本問卷。</p>`;
+          return `<p>您目前的裝置偵測不到麥克風。<br>請插入麥克風裝置，或改用有麥克風設備的裝置（例如手機）進行本問卷。</p>`;
         }
       }
     };
@@ -237,11 +251,61 @@
       button_label: "確認"
     };
 
+    const bank_info_trial = {
+      type: jsPsychSurvey,
+      pages: [
+        [
+          {
+            type: 'html',
+            prompt: '請填寫您的銀行帳戶，以利匯款事宜。請務必確認填寫無誤。',
+          },
+          {
+            type: 'text',
+            prompt: "戶名", 
+            name: 'bank_real_name', 
+            required: true,
+          },
+          {
+            type: 'text',
+            prompt: "身分證字號", 
+            name: 'id_card', 
+            required: true,
+          },
+          {
+            type: 'text',
+            prompt: "戶籍地址", 
+            name: 'address', 
+            required: true,
+          },
+          {
+            type: 'text',
+            prompt: "銀行名稱（例：「郵局」或「中國信託」...）", 
+            name: 'bank_name', 
+            required: true,
+          },
+          {
+            type: 'text',
+            prompt: "銀行分行名稱（若為郵局帳戶則無須填寫）", 
+            name: 'bank_branch', 
+            required: false,
+          },
+          {
+            type: 'text',
+            prompt: "匯款帳號", 
+            name: 'bank_id', 
+            required: false,
+          },
+        ]
+      ],
+      button_label_finish: '確認填寫無誤，送出',
+      required_error: '本題尚未作答'
+    };
+
     const show_img_trial_1 = {
         type: jsPsychImageButtonResponse,
         stimulus: '',
         choices: ['結束本問卷'],
-        prompt: "<p>問卷填寫完畢，感謝您的配合！</p>"
+        prompt: "<p>問卷填寫完畢，感謝您的填答！</p>"
     };
 
   
@@ -278,6 +342,9 @@
       return result
     }
 
+
+    
+
     trials = []
 
     for (let img of file_list) {
@@ -289,6 +356,7 @@
     // const timeline = [ welcome_trial, browser_check_trial, survey_trial, get_microphone_trial, show_img_trial_1, record_trial_1, show_img_trial_2, record_trial_2, show_img_trial_3, record_trial_3, show_img_trial_1];
     let timeline = [welcome_trial, survey_trial, browser_check_trial, get_microphone_trial]
     timeline = timeline.concat(trials)
+    timeline = timeline.concat([bank_info_trial])
     timeline = timeline.concat([show_img_trial_1])
 
     // let progress = 0;
@@ -310,12 +378,13 @@
         if (data.trial_type == "survey" || data.trial_type == "html-audio-response" || data.trial_type == "browser-check") {
 
           // 如果是填寫姓名那一頁，要把姓名當作id
-          if (data.trial_index == 1) {
-            var now = new Date();
-            var now_string = now.toISOString().substring(0,16).replace("T", "_").replace(":", "");
-            unique_id = `${now_string}_${data.response.name}`
-          }
-          // console.log('!!!');
+          // if (data.trial_index == 1) {
+          //   var now = new Date();
+          //   var now_string = now.toISOString().replace("T", "_").replace(":", "").replace("Z", "").replace(".", "_");
+          //   // unique_id = `${now_string}_${data.response.name}`
+          //   unique_id = `${now_string}`
+          // }
+
           save_data(data);
         }
 
