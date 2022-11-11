@@ -76,7 +76,7 @@ def save_data():
                     d['bank'] = bank_data
 
                 with open(f'./data/{unique_id}/data.json', 'w') as f:
-                    json.dump(data, f, ensure_ascii=False)
+                    json.dump(d, f, ensure_ascii=False)
 
                 return jsonify({"status": "success"})
 
