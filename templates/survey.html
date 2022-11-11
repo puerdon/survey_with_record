@@ -293,7 +293,7 @@
             type: 'text',
             prompt: "匯款帳號", 
             name: 'bank_id', 
-            required: false,
+            required: true,
           },
         ]
       ],
@@ -304,7 +304,7 @@
     const show_img_trial_1 = {
         type: jsPsychImageButtonResponse,
         stimulus: '',
-        choices: ['結束本問卷'],
+        choices: ['結束本問卷，您已可以將視窗關閉'],
         prompt: "<p>問卷填寫完畢，感謝您的填答！</p>"
     };
 
