@@ -58,22 +58,14 @@ def save_data():
 
             return jsonify({"status": "success"})
 
-        elif 'bank_name' in request.json['response']: 
-
-            'bank_real_name': request.json['response']['bank_real_name'] 
-            'id_card': request.json['response']['id_card']  
-            'address': request.json['response']['address'] 
-            'bank_name': request.json['response']['bank_name'] 
-            'bank_branch': request.json['response']['bank_branch']
-            'bank_id': request.json['response']['bank_id'] 
-
+        elif 'bank_name' in request.json['response']:
 
             bank_data = {
-                'bank_real_name': request.json['response']['bank_real_name'] 
-                'id_card': request.json['response']['id_card']  
-                'address': request.json['response']['address'] 
-                'bank_name': request.json['response']['bank_name'] 
-                'bank_branch': request.json['response']['bank_branch']
+                'bank_real_name': request.json['response']['bank_real_name'], 
+                'id_card': request.json['response']['id_card'],  
+                'address': request.json['response']['address'], 
+                'bank_name': request.json['response']['bank_name'], 
+                'bank_branch': request.json['response']['bank_branch'],
                 'bank_id': request.json['response']['bank_id'] 
             }
             
