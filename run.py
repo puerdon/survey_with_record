@@ -19,9 +19,9 @@ def save_data():
         unique_id = request.json['unique_id']
 
         # 如果是一開始的基本資料
-        if 'response' in request.json:
 
-            if request.json["trial_type"] == 'survey':
+        if request.json["trial_type"] == 'survey':
+            if 'age' in request.json['response']:
             # print(request.json)
             # name = request.json['response']['name']
                 age = request.json['response']['age']
