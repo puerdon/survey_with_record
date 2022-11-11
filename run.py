@@ -19,64 +19,66 @@ def save_data():
         unique_id = request.json['unique_id']
 
         # 如果是一開始的基本資料
-        if 'age' in request.json['response']: 
+        if 'response' in request.json:
+
+            if request.json["trial_type"] == 'survey':
             # print(request.json)
             # name = request.json['response']['name']
-            age = request.json['response']['age']
-            gender = request.json['response']['gender']
-            primary_lang = request.json['response']['primary_lang']
-            parent_lang = request.json['response']['parent_lang']
-            dialect = request.json['response']['dialect']
-            group_name = request.json['response']['group_name']
-            place = request.json['response']['place']
-            village_time = request.json['response']['village_time']
-            most_freq_lang = request.json['response']['most_freq_lang']
-            freq = request.json['response']['freq']
-            with_whom = request.json['response']['with_whom']
-            other = request.json['response']['other']
+                age = request.json['response']['age']
+                gender = request.json['response']['gender']
+                primary_lang = request.json['response']['primary_lang']
+                parent_lang = request.json['response']['parent_lang']
+                dialect = request.json['response']['dialect']
+                group_name = request.json['response']['group_name']
+                place = request.json['response']['place']
+                village_time = request.json['response']['village_time']
+                most_freq_lang = request.json['response']['most_freq_lang']
+                freq = request.json['response']['freq']
+                with_whom = request.json['response']['with_whom']
+                other = request.json['response']['other']
 
-            data = {
-                # "name": name,
-                "age": age,
-                "gender": gender,
-                "primary_lang": primary_lang,
-                "parent_lang": parent_lang,
-                "dialect": dialect,
-                "group_name": group_name,
-                "place": place,
-                "village_time": village_time,
-                "most_freq_lang": most_freq_lang,
-                "freq": freq,
-                "with_whom": with_whom,
-                "other": other
-            }
-            
-            os.mkdir(f'./data/{unique_id}')
+                data = {
+                    # "name": name,
+                    "age": age,
+                    "gender": gender,
+                    "primary_lang": primary_lang,
+                    "parent_lang": parent_lang,
+                    "dialect": dialect,
+                    "group_name": group_name,
+                    "place": place,
+                    "village_time": village_time,
+                    "most_freq_lang": most_freq_lang,
+                    "freq": freq,
+                    "with_whom": with_whom,
+                    "other": other
+                }
+                
+                os.mkdir(f'./data/{unique_id}')
 
-            with open(f'./data/{unique_id}/data.json', 'w') as f:
-                json.dump(data, f, ensure_ascii=False)
+                with open(f'./data/{unique_id}/data.json', 'w') as f:
+                    json.dump(data, f, ensure_ascii=False)
 
-            return jsonify({"status": "success"})
+                return jsonify({"status": "success"})
 
-        elif 'bank_name' in request.json['response']:
+            elif 'bank_name' in request.json['response']:
 
-            bank_data = {
-                'bank_real_name': request.json['response']['bank_real_name'], 
-                'id_card': request.json['response']['id_card'],  
-                'address': request.json['response']['address'], 
-                'bank_name': request.json['response']['bank_name'], 
-                'bank_branch': request.json['response']['bank_branch'],
-                'bank_id': request.json['response']['bank_id'] 
-            }
-            
-            with open(f'./data/{unique_id}/data.json', 'r') as f:
-                d = json.load(f)
-                d['bank'] = bank_data
+                bank_data = {
+                    'bank_real_name': request.json['response']['bank_real_name'], 
+                    'id_card': request.json['response']['id_card'],  
+                    'address': request.json['response']['address'], 
+                    'bank_name': request.json['response']['bank_name'], 
+                    'bank_branch': request.json['response']['bank_branch'],
+                    'bank_id': request.json['response']['bank_id'] 
+                }
+                
+                with open(f'./data/{unique_id}/data.json', 'r') as f:
+                    d = json.load(f)
+                    d['bank'] = bank_data
 
-            with open(f'./data/{unique_id}/data.json', 'w') as f:
-                json.dump(data, f, ensure_ascii=False)
+                with open(f'./data/{unique_id}/data.json', 'w') as f:
+                    json.dump(data, f, ensure_ascii=False)
 
-            return jsonify({"status": "success"})
+                return jsonify({"status": "success"})
 
         # 如果是得到 html-audio-response 的
         elif request.json["trial_type"] == "html-audio-response":
