@@ -4,7 +4,7 @@ import os
 import base64
 import json
 
-app = Flask(__name__, static_folder='data/')
+app = Flask(__name__, static_folder='static/')
 CORS(app)
 
 # 檢查有沒有data資料夾

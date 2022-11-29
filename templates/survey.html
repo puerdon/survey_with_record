@@ -12,7 +12,7 @@
 
     <!-- <script src="https://unpkg.com/@jspsych/plugin-image-button-response@1.1.1"></script> -->
     <script src="https://unpkg.com/@jspsych/plugin-html-button-response@1.1.1"></script>
-    <script src="https://unpkg.com/@jspsych/plugin-survey@0.2.0"></script>
+    <script src="js/plugin-survey.index.browser.min.js"></script>
     <script src="https://unpkg.com/@jspsych/plugin-browser-check@1.0.1"></script>
 
     <link href="https://unpkg.com/jspsych@7.3.0/css/jspsych.css" rel="stylesheet" type="text/css" />
@@ -153,6 +153,7 @@
     };
 
     const survey_trial = {
+      required_error_text: '請填答本題',
       type: jsPsychSurvey,
       pages: [
         [
@@ -241,7 +242,7 @@
         ]
       ],
       button_label_finish: '下一頁',
-      required_error: '本題尚未作答'
+      
     };
 
 
