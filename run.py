@@ -13,7 +13,7 @@ if not os.path.isdir('./data'):
 
 @app.route("/save_data", methods=['POST'])
 def save_data():
-    print(request.json)
+    # print(request.json)
     if request.json is not None:
 
         unique_id = request.json['unique_id']
@@ -52,7 +52,7 @@ def save_data():
                     "with_whom": with_whom,
                     "other": other
                 }
-                
+
                 os.mkdir(f'./data/{unique_id}')
 
                 with open(f'./data/{unique_id}/data.json', 'w') as f:
@@ -63,14 +63,14 @@ def save_data():
             elif 'bank_name' in request.json['response']:
 
                 bank_data = {
-                    'bank_real_name': request.json['response']['bank_real_name'], 
-                    'id_card': request.json['response']['id_card'],  
-                    'address': request.json['response']['address'], 
-                    'bank_name': request.json['response']['bank_name'], 
+                    'bank_real_name': request.json['response']['bank_real_name'],
+                    'id_card': request.json['response']['id_card'],
+                    'address': request.json['response']['address'],
+                    'bank_name': request.json['response']['bank_name'],
                     'bank_branch': request.json['response']['bank_branch'],
-                    'bank_id': request.json['response']['bank_id'] 
+                    'bank_id': request.json['response']['bank_id']
                 }
-                
+
                 with open(f'./data/{unique_id}/data.json', 'r') as f:
                     d = json.load(f)
                     d['bank'] = bank_data
@@ -91,7 +91,7 @@ def save_data():
 
             with open(f'./data/{unique_id}/{image_name}.wav', 'wb') as f:
                 f.write(audiofile)
-            
+
             # step 2: 寫入文字檔
             with open(f'./data/{unique_id}/data.json', 'r') as f:
                 data = json.load(f)
