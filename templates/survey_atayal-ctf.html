@@ -7,12 +7,12 @@
     <script src="https://unpkg.com/jspsych@7.3.0"></script>
     <script src="https://unpkg.com/@jspsych/plugin-initialize-microphone@1.0.1"></script> 
     <!-- <script src="https://unpkg.com/@jspsych/plugin-html-audio-response@1.0.1"></script> -->
-    <script src="js/html-audio-response.index.browser_v2.min.js"></script>
-    <script src="js/image-button-response.index.browser.min.js"></script>
+    <script src="/js/html-audio-response.index.browser_v3.min.js"></script>
+    <script src="/js/image-button-response.index.browser.min.js"></script>
 
     <!-- <script src="https://unpkg.com/@jspsych/plugin-image-button-response@1.1.1"></script> -->
     <script src="https://unpkg.com/@jspsych/plugin-html-button-response@1.1.1"></script>
-    <script src="js/plugin-survey.index.browser.min.js"></script>
+    <script src="/js/plugin-survey.index.browser.min.js"></script>
     <script src="https://unpkg.com/@jspsych/plugin-browser-check@1.0.1"></script>
 
     <link href="https://unpkg.com/jspsych@7.3.0/css/jspsych.css" rel="stylesheet" type="text/css" />
@@ -109,15 +109,17 @@
     
   </body>
   <script type="text/javascript">
+    var isDebugMode = window.location.href.includes('debug')
 
     // var unique_id = Math.floor(Math.random()*90000000) + 10000000;
     var now = new Date();
     var unique_id = now.toISOString().replace("T", "_").replaceAll(":", "").replace("Z", "").replace(".", "_");
+    var survey_id = window.location.pathname.split('/').slice(-1).pop();
 
     function save_data(data) {
       console.log('save_data() called');
       data.unique_id = unique_id;
-
+      data.survey_id = survey_id;
       fetch('/save_data', {
         method:'POST',
         body: JSON.stringify(data),
@@ -136,6 +138,25 @@
 
     const welcome_trial = {
       type: jsPsychHtmlButtonResponse,
+      stimulus: `<p>這裡是族語語感調查問卷，感謝您造訪！</p>
+      <ul>
+        <li>這個問卷會請您看圖畫和中文句子，然後錄下您的母語說法。總共有X情境，大約會花20分鐘填寫。範例如下：
+          <ul>
+            <li>A和B去聽演講，B遲到了。</li>
+            <img src="/images/example1.png" width="300px"/>
+            <li>B到的時候，問A說：<strong>「他剛剛說了什麼？」</strong></li>
+            <img src="/images/example2.png" width="300px"/>
+            <li>您的回答：nanu' qu wal nya' skayal sawni'?</li>
+          </ul>
+        </li>
+        <li>這個問卷是匿名調查，音檔不會公開，只會書寫成文字紀錄。</li>
+        <li>因為每個人語言使用不同，需要填寫您本人的母語使用背景，也需要由本人來錄音。（您可以替親友操作，但需要填寫親友的母語使用背景、並由親友本人錄音。）</li>
+        <li>請按「下一頁」看詳細說明。</li>`,
+      choices: ['下一頁']
+    }
+
+    const consent_form_trial = {
+      type: jsPsychHtmlButtonResponse,
       stimulus: '<h1>問卷知情說明頁</h1><p>感謝您抽空填寫本問卷！</p><ul><li>本問卷是由國科會補助語言學研究計畫「泰雅語的偏向性問句與跨語言比較」的調查問卷。問卷目的為調查年滿四十歲的台灣南島語母語者者如何表達各種句型。</li><li>問卷內容：您會看到各種以圖畫描述的情境，您需要針對每個不同的情境來提供你覺得最自然的說法，我們會請您錄音，您也可以另外提供文字書寫。</li><li>作答不限時間，預計每份問卷約花費20-30分鐘。</li><li>每人僅能作答一次。</li><li>為感謝您撥空參與，成功送出問卷後您可以獲得100-200元酬勞：僅錄音可獲得100元酬勞，若也提供文字書寫可獲得200元酬勞。請在問卷最後的頁面留下您的個人資料，您的個人資料僅為酬勞匯款與報帳使用，將完全保密。</li><li>若您想詢問本問卷內容，或有興趣參與更多的語法研究，歡迎聯絡主持人：中研院語言所助研究員 陳思瑋<br>電話：02-26525042  電子郵件：sihweichen@gate.sinica.edu.tw。</li><li>本問卷作答採不記名及無法辨識個人資訊的方式。與此研究相關的學術發表將採整體分析，您不會被辨識出，亦無衍生的商業利益。您可自由決定是否填寫，亦可中途退出問卷，無需感到壓力。</li></ul><p>若您有關於參與研究的權益或申訴意見，請聯絡中央研究院人文社會科學研究倫理委員會<br>電話：02-27898722，電子郵件：irb@gate.sinica.edu.tw。</p><h3>如同意填寫，請點選下方「點此開始問卷」按鈕</h3>',
       choices: ['點此開始問卷'],
     };
@@ -147,12 +168,12 @@
       },
       exclusion_message: (data) => {
         if (!data.microphone) {
-          return `<p>您目前的裝置偵測不到麥克風。<br>請插入麥克風裝置，或改用有麥克風設備的裝置（例如手機）進行本問卷。</p>`;
+          return `<p>您目前的裝置偵測不到麥克風。<br>請插入麥克風裝置，或改用有麥克風設備的裝置（例如手機），重新進行本問卷。</p>`;
         }
       }
     };
 
-    const survey_trial = {
+    const subject_info_trial = {
       required_error_text: '請填答本題',
       type: jsPsychSurvey,
       pages: [
@@ -242,7 +263,15 @@
         ]
       ],
       button_label_finish: '下一頁',
-      
+      // on_load: function () {
+      //   if (isDebugMode) {
+      //     console.log(document);
+      //     console.log(document.querySelector('select'));
+      //     document.querySelectorAll('select').forEach(e => {
+      //       e.value = e.options[1].text
+      //     })
+      //   }
+      // }
     };
 
 
@@ -251,6 +280,39 @@
       device_select_message: "<p>請選擇你要使用的麥克風裝置</p>",
       button_label: "確認"
     };
+
+    let file_list = ['01_A1', '02_B1', '03_C1', '04_D1', '05_A2', '06_B2', '07_C2', '08_D2', '09_A3', '10_A4', '11_B3', '12_C3', '13_D3', '14_D4'];
+
+    function img_name_to_trial(image_name) {
+      var record_trial = {
+        type: jsPsychHtmlAudioResponse,
+        stimulus: `請先仔細看下面的漫畫：`,
+        stimulus_duration: null,
+        recording_duration: 30000,
+        allow_playback: true,
+        done_button_label: "停止錄音",
+        record_again_button_label: "重錄一次",
+        accept_button_label: "填答確認無誤，下一題",
+        show_button_label: "開始錄音",
+        show_start_button: true,
+        show_textarea: true,
+        image_name: `/images/atayal-ctf/${image_name}.png`,
+      }
+
+      return [record_trial]
+    }
+
+    trials = []
+    for (let img of file_list) {
+      let r = img_name_to_trial(img)
+      trials = trials.concat(r)
+    }
+
+    const before_bank_info_trial = {
+      type: jsPsychHtmlButtonResponse,
+      stimulus: '<p>您已完成問卷！非常感謝您的作答。請按「下一頁」填寫您的收款資訊，或按「離開」</p>',
+      choices: ['下一頁：填寫收款資訊', '離開：我不需要報酬'],
+    }
 
     const bank_info_trial = {
       type: jsPsychSurvey,
@@ -299,109 +361,56 @@
         ]
       ],
       button_label_finish: '確認填寫無誤，送出',
-      required_error: '本題尚未作答'
+      required_error_text: '請填答本題',
     };
 
-    const show_img_trial_1 = {
+    const if_node = {
+        timeline: [bank_info_trial],
+        conditional_function: function(){
+
+            var response = jsPsych.data.get().last(1).values()[0].response;
+            console.log(response);
+
+            // 如果按的是不用酬勞 則return false
+            if( response === 1){
+                return false;
+            } else {
+                return true;
+            }
+        }
+    }
+
+    const last_page_trial = {
         type: jsPsychImageButtonResponse,
         stimulus: '',
         choices: ['結束本問卷，您已可以將視窗關閉'],
         prompt: "<p>問卷填寫完畢，感謝您的填答！</p>"
     };
-
-  
-
-    let file_list = ['01_A1', '02_B1', '03_C1', '04_D1', '05_A2', '06_B2', '07_C2', '08_D2', '09_A3', '10_A4', '11_B3', '12_C3', '13_D3', '14_D4'];
-
-    function img_name_to_trial(image_name) {
-      // var show_img = {
-      //   type: jsPsychImageButtonResponse,
-      //   stimulus: `images/${image_name}.png`,
-      //   choices: ['繼續'],
-      //   prompt_above: "<p>請仔細看下面的圖片，看完後請按下「繼續」鍵。</p>",
-      //   // render_on_canvas: false
-      // }
-
-      var record_trial = {
-        type: jsPsychHtmlAudioResponse,
-        stimulus: `請先仔細看下面的漫畫：`,
-        stimulus_duration: null,
-        recording_duration: 30000,
-        allow_playback: true,
-        done_button_label: "停止錄音",
-        record_again_button_label: "重錄一次",
-        accept_button_label: "填答確認無誤，下一題",
-        show_button_label: "開始錄音",
-        show_start_button: true,
-        show_textarea: true,
-        image_name: `${image_name}.png`,
-      }
-      // var result = [show_img, record_trial]
-      var result = [record_trial]
-
-      // console.log(result)
-      return result
-    }
-
-
     
+    let timeline = []
 
-    trials = []
-
-    for (let img of file_list) {
-      let r = img_name_to_trial(img)
-      trials = trials.concat(r)
-    }
-
-    // console.log(trials)
-    // const timeline = [ welcome_trial, browser_check_trial, survey_trial, get_microphone_trial, show_img_trial_1, record_trial_1, show_img_trial_2, record_trial_2, show_img_trial_3, record_trial_3, show_img_trial_1];
-    let timeline = [welcome_trial, survey_trial, browser_check_trial, get_microphone_trial]
+    timeline = timeline.concat([welcome_trial, consent_form_trial, subject_info_trial, browser_check_trial, get_microphone_trial])
     timeline = timeline.concat(trials)
-    timeline = timeline.concat([bank_info_trial])
-    timeline = timeline.concat([show_img_trial_1])
+    // timeline = timeline.concat([before_bank_info_trial, bank_info_trial, last_page_trial])
+    timeline = timeline.concat([before_bank_info_trial, if_node, last_page_trial])
 
-    // let progress = 0;
 
     const jsPsych = initJsPsych({
       show_progress_bar: true,
       message_progress_bar: `問卷完成進度`,
-      // 
       on_trial_finish: function(data) {
-        console.log('A trial just ended.');
-        // console.log(JSON.stringify(data));
-        console.log(`trial_type: ${data.trial_type}`);
-
-
-        // console.log('get all data:');
-        // console.log(jsPsych.data.get());
-
-
         if (data.trial_type == "survey" || data.trial_type == "html-audio-response" || data.trial_type == "browser-check") {
-
-          // 如果是填寫姓名那一頁，要把姓名當作id
-          // if (data.trial_index == 1) {
-          //   var now = new Date();
-          //   var now_string = now.toISOString().replace("T", "_").replace(":", "").replace("Z", "").replace(".", "_");
-          //   // unique_id = `${now_string}_${data.response.name}`
-          //   unique_id = `${now_string}`
-          // }
-
           save_data(data);
         }
-
-        // progress++;
       },
+      // on_trial_start: function(trial) {
+      //   var trial_name = trial.type.info.name
 
-      // 整個實驗做完後
-      // on_finish: function(data) {
-      //   window.location.href = '/result?id=' + unique_id;
+        
       // }
     });
 
-
-    // console.log(timeline)
     jsPsych.run(timeline);
-
-
+    // jsPsych.simulate(timeline, 'data-only');
   </script>
 </html>

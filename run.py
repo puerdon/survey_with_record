@@ -13,10 +13,12 @@ if not os.path.isdir('./data'):
 
 @app.route("/save_data", methods=['POST'])
 def save_data():
-    print(request.json)
+    # print(request.json)
     if request.json is not None:
 
         unique_id = request.json['unique_id']
+        survey_id = request.json['survey_id']
+
 
         # 如果是一開始的基本資料
 
@@ -53,9 +55,9 @@ def save_data():
                     "other": other
                 }
                 
-                os.mkdir(f'./data/{unique_id}')
+                os.makedirs(f'./data/{survey_id}/{unique_id}', exist_ok=True)
 
-                with open(f'./data/{unique_id}/data.json', 'w') as f:
+                with open(f'./data/{survey_id}/{unique_id}/data.json', 'w') as f:
                     json.dump(data, f, ensure_ascii=False)
 
                 return jsonify({"status": "success"})
@@ -71,11 +73,11 @@ def save_data():
                     'bank_id': request.json['response']['bank_id'] 
                 }
                 
-                with open(f'./data/{unique_id}/data.json', 'r') as f:
+                with open(f'./data/{survey_id}/{unique_id}/data.json', 'r') as f:
                     d = json.load(f)
                     d['bank'] = bank_data
 
-                with open(f'./data/{unique_id}/data.json', 'w') as f:
+                with open(f'./data/{survey_id}/{unique_id}/data.json', 'w') as f:
                     json.dump(d, f, ensure_ascii=False)
 
                 return jsonify({"status": "success"})
@@ -87,17 +89,17 @@ def save_data():
             # step 1: 寫入音檔
             audio_base64_string = request.json['response']
             audiofile = base64.b64decode(bytes(audio_base64_string, 'utf-8'))
-            image_name = request.json['image_name'].rstrip(".png")
+            image_name = request.json['image_name'].rstrip(".png").split('/')[-1].rstrip('.')
 
-            with open(f'./data/{unique_id}/{image_name}.wav', 'wb') as f:
+            with open(f'./data/{survey_id}/{unique_id}/{image_name}.wav', 'wb') as f:
                 f.write(audiofile)
             
             # step 2: 寫入文字檔
-            with open(f'./data/{unique_id}/data.json', 'r') as f:
+            with open(f'./data/{survey_id}/{unique_id}/data.json', 'r') as f:
                 data = json.load(f)
                 data[image_name] = request.json['textarea']
 
-            with open(f'./data/{unique_id}/data.json', 'w') as f:
+            with open(f'./data/{survey_id}/{unique_id}/data.json', 'w') as f:
                 json.dump(data, f, ensure_ascii=False)
 
             return jsonify({"status": "success"})
@@ -106,13 +108,13 @@ def save_data():
         elif request.json["trial_type"] == "browser-check":
 
             # step 2: 寫入文字檔
-            with open(f'./data/{unique_id}/data.json', 'r') as f:
+            with open(f'./data/{survey_id}/{unique_id}/data.json', 'r') as f:
                 data = json.load(f)
                 data['browser_check'] = {}
                 for k in request.json:
                     data['browser_check'][k] = request.json[k]
 
-            with open(f'./data/{unique_id}/data.json', 'w') as f:
+            with open(f'./data/{survey_id}/{unique_id}/data.json', 'w') as f:
                 json.dump(data, f, ensure_ascii=False)
 
             return jsonify({"status": "success"})
@@ -120,22 +122,44 @@ def save_data():
     return None
 
 
-@app.route("/survey", methods=['GET'])
-def survey():
-    return render_template('survey.html')
+@app.route("/survey/<survey_id>", methods=['GET'])
+def survey(survey_id):
+    return render_template(f'survey_{survey_id}.html')
+
+@app.route("/results", methods=['GET'])
+def results():
+    results = []
+    dirs = os.listdir('./data')
+    for dir_ in dirs:
+        if dir_.startswith('.'):
+            continue
+        with open(f'./data/{dir_}/data.json', 'r') as f:
+            data = json.load(f)
+            results.append({
+                'age': data['age'],
+                'gender': data['gender'],
+                'id': dir_
+            })
+    return render_template('results.html', results=results)
+
 
 @app.route("/result", methods=['GET'])
 def result():
     user_id = request.args.get('id')
+    
 
     data = None
+    audio_paths = []
     # read json
     with open(f'./data/{user_id}/data.json', 'r') as f:
         data = json.load(f)
+        print(data)
 
-    name = data['name']
-    age = data['age']
+    # 看是否有音檔
+    for dir_ in os.listdir(f'./data/{user_id}'):
+        if dir_.endswith('.wav'):
+            audio_paths.append(dir_)
 
-    audio_link = f"{user_id}/x.wav"
+    # audio_link = f"{user_id}/x.wav"
 
-    return render_template('result.html', name=name, age=age, audio_link=audio_link)
+    return render_template('result.html', data=data, audio_paths=audio_paths, user_id=user_id)

@@ -9,7 +9,13 @@
 <body>
 	<main class="container">
 		<h2>測驗結束</h2>
-		<p>感謝您撥空進行本測驗</p>
+		{% for k in data %}
+			<p>{{ data[k] }}</p>
+		{% endfor %}
+
+		{% for path in audio_paths %}
+			<p>{{ path }}</p>
+		{% endfor %}
 		<!-- <h2>您的回答：</h2>
 		<p>姓名: <span>{{ name }}</span></p>
 		<p>年齡範圍: <span>{{ age }}</span></p>
