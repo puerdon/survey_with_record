@@ -54,7 +54,7 @@ def save_data():
                     "with_whom": with_whom,
                     "other": other
                 }
-                
+
                 os.makedirs(f'./data/{survey_id}/{unique_id}', exist_ok=True)
 
                 with open(f'./data/{survey_id}/{unique_id}/data.json', 'w') as f:
@@ -65,13 +65,14 @@ def save_data():
             elif 'bank_name' in request.json['response']:
 
                 bank_data = {
-                    'bank_real_name': request.json['response']['bank_real_name'], 
-                    'id_card': request.json['response']['id_card'],  
-                    'address': request.json['response']['address'], 
-                    'bank_name': request.json['response']['bank_name'], 
+                    'bank_real_name': request.json['response']['bank_real_name'],
+                    'id_card': request.json['response']['id_card'],
+                    'address': request.json['response']['address'],
+                    'bank_name': request.json['response']['bank_name'],
                     'bank_branch': request.json['response']['bank_branch'],
-                    'bank_id': request.json['response']['bank_id'] 
+                    'bank_id': request.json['response']['bank_id']
                 }
+
                 
                 with open(f'./data/{survey_id}/{unique_id}/data.json', 'r') as f:
                     d = json.load(f)
@@ -93,7 +94,7 @@ def save_data():
 
             with open(f'./data/{survey_id}/{unique_id}/{image_name}.wav', 'wb') as f:
                 f.write(audiofile)
-            
+
             # step 2: 寫入文字檔
             with open(f'./data/{survey_id}/{unique_id}/data.json', 'r') as f:
                 data = json.load(f)
