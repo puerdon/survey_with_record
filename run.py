@@ -162,23 +162,53 @@ def results():
     return render_template('results.html', results=results)
 
 
-@app.route("/result", methods=['GET'])
-def result():
-    user_id = request.args.get('id')
+@app.route("/result/", methods=['GET'])
+def result_list_survey_id():
+
+    survey_ids = []
     
+    for dir_ in os.listdir(f'./data'):
+        print(dir_)
+        if not dir_.startswith('2') and not dir_.startswith('.'):
+            survey_ids.append(dir_)
+    print(survey_ids)
+    return render_template('result_list_survey_id.html', data=survey_ids)
+
+@app.route("/result/<survey_id>/", methods=['GET'])
+def result_of_a_survey(survey_id):
+
+    data = []
+
+    for dir_ in os.listdir(f'./data/{survey_id}'):
+        if dir_.startswith('.'):
+            continue
+        with open(f'./data/{survey_id}/{dir_}/data.json', 'r') as f:
+            d = json.load(f)
+            d['user_id'] = dir_
+            data.append(d)
+
+    return render_template('result_of_a_survey.html', data=data, survey_id=survey_id)
+
+@app.route("/result/<survey_id>/<subject_id>", methods=['GET'])
+def result_of_a_subject(survey_id, subject_id):
 
     data = None
-    audio_paths = []
-    # read json
-    with open(f'./data/{user_id}/data.json', 'r') as f:
-        data = json.load(f)
-        print(data)
+    audio_files = []
+    try:
+        with open(f'./data/{survey_id}/{subject_id}/data.json', 'r') as f:
+            d = json.load(f)
+            data = d
+            data['user_id'] = subject_id
 
-    # 看是否有音檔
-    for dir_ in os.listdir(f'./data/{user_id}'):
-        if dir_.endswith('.wav'):
-            audio_paths.append(dir_)
+        for dir_ in os.listdir(f'./data/{survey_id}/{subject_id}'):
+            if dir_.endswith('.wav'):
+                audio_files.append(dir_)
+        # print(data)
+        audio_files = sorted(audio_files)
+        return render_template('result_of_a_subject.html', data=data, audio_files=audio_files)    
 
-    # audio_link = f"{user_id}/x.wav"
 
-    return render_template('result.html', data=data, audio_paths=audio_paths, user_id=user_id)
+    except Exception as e:
+        print(e)
+        return render_template('error.html')
+

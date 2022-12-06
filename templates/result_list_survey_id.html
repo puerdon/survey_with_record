@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Result</title>
+	<link rel="stylesheet" href="https://unpkg.com/@picocss/pico@latest/css/pico.min.css">
+</head>
+<body>
+	<main class="container">
+		<h2>List of surveys</h2>
+
+
+		<table>
+		  <thead>
+		    <tr>
+		      <th scope="col">#</th>
+		      <th scope="col">survey id</th>
+		    </tr>
+		  </thead>
+		  <tbody>
+		  	{% for survey_id in data %}
+		  	<tr>
+		      <th scope="row">{{ loop.index }}</th>
+		      <th><a href="/result/{{ survey_id }}">{{ survey_id }}</a></th>
+		    </tr>
+			{% endfor %}
+
+		    
+		   </tbody>
+		</table>
+		<!-- <h2>您的回答：</h2>
+		<p>姓名: <span>{{ name }}</span></p>
+		<p>年齡範圍: <span>{{ age }}</span></p>
+		<p>音檔</p>
+		<audio controls>
+		  <source src="/{{ audio_link }}" type="audio/wav">
+		您的瀏覽器不支援播放音檔。
+		</audio> -->
+	</main>
+	
+</body>
+</html>

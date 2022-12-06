@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Result</title>
+	<link rel="stylesheet" href="https://unpkg.com/@picocss/pico@latest/css/pico.min.css">
+	<style type="text/css">
+		p {
+			margin: 0;
+		}
+	</style>
+</head>
+<body>
+	<main class="container">
+		<!-- <h2>Result</h2> -->
+		<div>
+			<h3>subject metadata</h3>
+			<p>年紀：{{ data['subject_info']['age'] }}</p>
+		      <p>性別：{{ data['subject_info']['gender'] }}</p>
+		      <p>族語是否為母語：{{ data['subject_info']['primary_lang'] }}</p>
+		      <p>長輩使用情況：{{ data['subject_info']['parent_lang'] }}</p>
+		      <p>方言：{{ data['subject_info']['dialect'] }}</p>
+		      <p>稱呼方言或族群：{{ data['subject_info']['group_name'] }}</p>
+		      <p>鄉鎮部落：{{ data['subject_info']['place'] }}</p>
+		      <p>居住部落時間：{{ data['subject_info']['village_time'] }}</p>
+		      <p>最常使用語言：{{ data['subject_info']['most_freq_lang'] }}</p>
+		      <p>族語使用頻率：{{ data['subject_info']['freq'] }}</p>
+		      <p>最常跟誰用泰雅語：{{ data['subject_info']['with_whom'] }}</p>
+		      <p>其他：{{ data['subject_info']['other'] }}</p>
+		</div>
+
+
+		<div>
+			{% for f in audio_files %}
+				<p>
+				{{ f }}
+				</p>
+				<p></p>
+			{% endfor %}
+		</div>
+	</main>
+	
+</body>
+</html>
