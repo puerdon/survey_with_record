@@ -21,7 +21,6 @@ def save_data():
 
 
         # 如果是一開始的基本資料
-
         if request.json["trial_type"] == 'survey':
             if 'age' in request.json['response']:
             # print(request.json)
@@ -41,18 +40,22 @@ def save_data():
 
                 data = {
                     # "name": name,
-                    "age": age,
-                    "gender": gender,
-                    "primary_lang": primary_lang,
-                    "parent_lang": parent_lang,
-                    "dialect": dialect,
-                    "group_name": group_name,
-                    "place": place,
-                    "village_time": village_time,
-                    "most_freq_lang": most_freq_lang,
-                    "freq": freq,
-                    "with_whom": with_whom,
-                    "other": other
+                    "subject_info": {
+                        "age": age,
+                        "gender": gender,
+                        "primary_lang": primary_lang,
+                        "parent_lang": parent_lang,
+                        "dialect": dialect,
+                        "group_name": group_name,
+                        "place": place,
+                        "village_time": village_time,
+                        "most_freq_lang": most_freq_lang,
+                        "freq": freq,
+                        "with_whom": with_whom,
+                        "other": other
+                    },
+                    "results": [],
+                    "bank_info": ""
                 }
 
                 os.makedirs(f'./data/{survey_id}/{unique_id}', exist_ok=True)
@@ -72,11 +75,10 @@ def save_data():
                     'bank_branch': request.json['response']['bank_branch'],
                     'bank_id': request.json['response']['bank_id']
                 }
-
                 
                 with open(f'./data/{survey_id}/{unique_id}/data.json', 'r') as f:
                     d = json.load(f)
-                    d['bank'] = bank_data
+                    d['bank_info'] = bank_data
 
                 with open(f'./data/{survey_id}/{unique_id}/data.json', 'w') as f:
                     json.dump(d, f, ensure_ascii=False)
@@ -98,7 +100,10 @@ def save_data():
             # step 2: 寫入文字檔
             with open(f'./data/{survey_id}/{unique_id}/data.json', 'r') as f:
                 data = json.load(f)
-                data[image_name] = request.json['textarea']
+                data['results'].append({
+                    "image_name": image_name,
+                    "text": request.json['textarea']
+                })
 
             with open(f'./data/{survey_id}/{unique_id}/data.json', 'w') as f:
                 json.dump(data, f, ensure_ascii=False)
@@ -119,6 +124,19 @@ def save_data():
                 json.dump(data, f, ensure_ascii=False)
 
             return jsonify({"status": "success"})
+
+        # 只有選擇 不要報酬 才會進來這裡
+        elif request.json["trial_type"] == "html-button-response":
+
+            if request.json["response"] == 1:
+                with open(f'./data/{survey_id}/{unique_id}/data.json', 'r') as f:
+                    d = json.load(f)
+                    d['bank_info'] = 'no need'
+
+                with open(f'./data/{survey_id}/{unique_id}/data.json', 'w') as f:
+                    json.dump(d, f, ensure_ascii=False)
+
+                return jsonify({"status": "success"})
 
     return None
 

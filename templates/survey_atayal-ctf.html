@@ -395,10 +395,11 @@
     
     let timeline = []
 
-    // timeline = timeline.concat([welcome_trial, consent_form_trial, subject_info_trial, browser_check_trial, get_microphone_trial])
-    timeline = timeline.concat([get_microphone_trial])
+    timeline = timeline.concat([welcome_trial, consent_form_trial, subject_info_trial, browser_check_trial, get_microphone_trial])
+    // timeline = timeline.concat([get_microphone_trial])
 
-    timeline = timeline.concat(trials)
+    // timeline = timeline.concat(trials)
+    
     // timeline = timeline.concat([before_bank_info_trial, bank_info_trial, last_page_trial])
     timeline = timeline.concat([before_bank_info_trial, if_node, last_page_trial])
 
@@ -407,9 +408,16 @@
       show_progress_bar: true,
       message_progress_bar: `問卷完成進度`,
       on_trial_finish: function(data) {
+        // console.log(data);
         if (data.trial_type == "survey" || data.trial_type == "html-audio-response" || data.trial_type == "browser-check") {
           save_data(data);
+        } else if (data.trial_type == "html-button-response") {
+            if (data.response === 1) { // response === 1 只會出現在選擇不要報酬的時候
+              save_data(data);
+            }
         }
+
+
       },
       // on_trial_start: function(trial) {
       //   var trial_name = trial.type.info.name
