@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, jsonify, render_template, send_file
 from flask_cors import CORS
 import os
 import base64
@@ -187,6 +187,7 @@ def result_of_a_survey(survey_id):
             d['user_id'] = dir_
             data.append(d)
 
+    print(data)
     return render_template('result_of_a_survey.html', data=data, survey_id=survey_id)
 
 @app.route("/result/<survey_id>/<subject_id>", methods=['GET'])
@@ -194,21 +195,31 @@ def result_of_a_subject(survey_id, subject_id):
 
     data = None
     audio_files = []
+    has_bank_info = False
+
     try:
         with open(f'./data/{survey_id}/{subject_id}/data.json', 'r') as f:
             d = json.load(f)
             data = d
             data['user_id'] = subject_id
-
+            data['survey_id'] = survey_id
+            if isinstance(data['bank_info'], str) and data['bank_info'] == 'no need':
+                has_bank_info = False
+            else:
+                has_bank_info = True
         for dir_ in os.listdir(f'./data/{survey_id}/{subject_id}'):
             if dir_.endswith('.wav'):
                 audio_files.append(dir_)
         # print(data)
         audio_files = sorted(audio_files)
-        return render_template('result_of_a_subject.html', data=data, audio_files=audio_files)    
+        return render_template('result_of_a_subject.html', data=data, audio_files=audio_files, has_bank_info=has_bank_info)    
 
 
     except Exception as e:
         print(e)
         return render_template('error.html')
+
+@app.route("/data/<survey_id>/<subject_id>/<filename>", methods=['GET'])
+def send_data(survey_id,subject_id,filename):
+    return send_file(f'./data/{survey_id}/{subject_id}/{filename}')
 

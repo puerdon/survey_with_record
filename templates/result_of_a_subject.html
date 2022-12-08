@@ -9,35 +9,75 @@
 		p {
 			margin: 0;
 		}
+		h3 {
+			margin-bottom: 10px;
+		}
+		#audio {
+			margin-top: 1em;
+		}
+		#audio > div {
+			margin-bottom: 1em;
+		}
 	</style>
 </head>
 <body>
 	<main class="container">
 		<!-- <h2>Result</h2> -->
-		<div>
-			<h3>subject metadata</h3>
-			<p>年紀：{{ data['subject_info']['age'] }}</p>
-		      <p>性別：{{ data['subject_info']['gender'] }}</p>
-		      <p>族語是否為母語：{{ data['subject_info']['primary_lang'] }}</p>
-		      <p>長輩使用情況：{{ data['subject_info']['parent_lang'] }}</p>
-		      <p>方言：{{ data['subject_info']['dialect'] }}</p>
-		      <p>稱呼方言或族群：{{ data['subject_info']['group_name'] }}</p>
-		      <p>鄉鎮部落：{{ data['subject_info']['place'] }}</p>
-		      <p>居住部落時間：{{ data['subject_info']['village_time'] }}</p>
-		      <p>最常使用語言：{{ data['subject_info']['most_freq_lang'] }}</p>
-		      <p>族語使用頻率：{{ data['subject_info']['freq'] }}</p>
-		      <p>最常跟誰用泰雅語：{{ data['subject_info']['with_whom'] }}</p>
-		      <p>其他：{{ data['subject_info']['other'] }}</p>
+		<div class="grid">
+			<div>
+				<h3>subject metadata</h3>
+				<p>年紀：{{ data['subject_info']['age'] }}</p>
+			      <p>性別：{{ data['subject_info']['gender'] }}</p>
+			      <p>族語是否為母語：{{ data['subject_info']['primary_lang'] }}</p>
+			      <p>長輩使用情況：{{ data['subject_info']['parent_lang'] }}</p>
+			      <p>方言：{{ data['subject_info']['dialect'] }}</p>
+			      <p>稱呼方言或族群：{{ data['subject_info']['group_name'] }}</p>
+			      <p>鄉鎮部落：{{ data['subject_info']['place'] }}</p>
+			      <p>居住部落時間：{{ data['subject_info']['village_time'] }}</p>
+			      <p>最常使用語言：{{ data['subject_info']['most_freq_lang'] }}</p>
+			      <p>族語使用頻率：{{ data['subject_info']['freq'] }}</p>
+			      <p>最常跟誰用泰雅語：{{ data['subject_info']['with_whom'] }}</p>
+			      <p>其他：{{ data['subject_info']['other'] }}</p>
+			</div>
+			
+			<div>
+				<h3>recording device</h3>
+				<p>瀏覽器：{{ data['browser_check']['browser'] }}</p>
+				<p>瀏覽器版本：{{ data['browser_check']['browser_version'] }}</p>
+			    <p>作業系統：{{ data['browser_check']['os'] }}</p>
+			    <p>mobile? {{ data['browser_check']['mobile'] }}</p>
+			    <p>webaudio? {{ data['browser_check']['webaudio'] }}</p>
+			    <p>microphone? {{ data['browser_check']['microphone'] }}</p>
+			</div>
+
+			<div>
+				<h3>bank info</h3>
+				{% if has_bank_info %}
+				<p>戶名：{{ data['bank_info']['bank_real_name'] }}</p>
+			    <p>身分證字號：{{ data['bank_info']['id_card'] }}</p>
+			    <p>戶籍地址：{{ data['bank_info']['address'] }}</p>
+			    <p>銀行：{{ data['bank_info']['bank_name'] }}</p>
+			    <p>分行：{{ data['bank_info']['bank_branch'] }}</p>
+			    <p>帳號：{{ data['bank_info']['bank_id'] }}</p>
+			    {% else %}
+			    <p>不需要報酬</p>
+			    {% endif %}
+			</div>
+			
+			
 		</div>
 
-
-		<div>
+		<div id='audio'>
+			<h3>Audio files</h3>
 			{% for f in audio_files %}
-				<p>
-				{{ f }}
-				</p>
-				<p></p>
+			<div>
+				<p><strong>{{ f }}</strong></p>
+				<audio src="/data/{{ data['survey_id'] }}/{{ data['user_id'] }}/{{ f }}" controls>
+				</audio>
+				<p>文字: {{ data['results'][loop.index0]['text'] }}</p>
+			</div>
 			{% endfor %}
+
 		</div>
 	</main>
 	

@@ -8,7 +8,7 @@
 </head>
 <body>
 	<main class="container">
-		<h2>Results of the survey {{survey_id}}</h2>
+		<h2>Results of the survey "{{survey_id}}"</h2>
 
 
 		<table>
@@ -27,11 +27,11 @@
 		  	{% for subject in data %}
 		  	<tr>
 		      <th scope="row">{{ loop.index }}</th>
-		      <th>{{ subject['age'] }}</th>
-		      <th>{{ subject['gender'] }}</th>
-		      <th>{{ subject['dialect'] }}</th>
-		      <th>{{ subject['place'] }}</th>
-		      <th>{{ subject['village_time'] }}</th>
+		      <th>{{ subject['subject_info']['age'] }}</th>
+		      <th>{{ subject['subject_info']['gender'] }}</th>
+		      <th>{{ subject['subject_info']['dialect'] }}</th>
+		      <th>{{ subject['subject_info']['place'] }}</th>
+		      <th>{{ subject['subject_info']['village_time'] }}</th>
 		      <th><a href="/result/{{ survey_id }}/{{ subject['user_id'] }}">result</a></th>
 
 		      
