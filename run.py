@@ -178,10 +178,14 @@ def result_list_survey_id():
 def result_of_a_survey(survey_id):
 
     data = []
-
+    dirs = []
     for dir_ in os.listdir(f'./data/{survey_id}'):
         if dir_.startswith('.'):
             continue
+        dirs.append(dir_)
+    dirs.sort()
+
+    for dir_ in dirs:
         with open(f'./data/{survey_id}/{dir_}/data.json', 'r') as f:
             d = json.load(f)
             d['user_id'] = dir_
