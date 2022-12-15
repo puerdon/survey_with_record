@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>My experiment</title>
+    <title>泰雅語錄音問卷</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script src="https://unpkg.com/jspsych@7.3.0"></script>
@@ -146,7 +146,7 @@
       type: jsPsychHtmlButtonResponse,
       stimulus: `<p>這裡是族語語感調查問卷，感謝您造訪！</p>
       <ul>
-        <li>這個問卷會請您看圖畫和中文句子，然後錄下您的母語說法。總共有X情境，大約會花20分鐘填寫。範例如下：
+        <li>這個問卷會請您看圖畫和中文句子，然後錄下您的母語說法。總共有14個情境，大約會花20分鐘填寫。範例如下：
           <ul>
             <li>A和B去聽演講，B遲到了。</li>
             <img src="/images/example1.png" width="300px"/>
@@ -156,7 +156,7 @@
           </ul>
         </li>
         <li>這個問卷是匿名調查，音檔不會公開，只會書寫成文字紀錄。</li>
-        <li>因為每個人語言使用不同，需要填寫您本人的母語使用背景，也需要由本人來錄音。（您可以替親友操作，但需要填寫親友的母語使用背景、並由親友本人錄音。）</li>
+        <li>因為每個人語言使用不同，需要填寫您本人的母語使用背景，也需要由本人來錄音。（您可以替親友操作，但需要填寫親友的母語使用背景、並由親友本人錄音。）<span style="color:red">注意：「您必須為泰雅語母語者才能填寫此問卷」</span></li>
         <li>請按「下一頁」看詳細說明。</li>`,
       choices: ['下一頁']
     }
@@ -269,6 +269,11 @@
         ]
       ],
       button_label_finish: '下一頁',
+      on_finish: function(data){
+        if(data.response.primary_lang === '否') {
+          jsPsych.endExperiment('很抱歉，本問卷只有母語為泰雅語的受試者才能填寫。感謝您撥空填寫！');
+        }
+      }
       // on_load: function () {
       //   if (isDebugMode) {
       //     console.log(document);
@@ -370,7 +375,7 @@
       required_error_text: '請填答本題',
     };
 
-    const if_node = {
+    const if_to_be_paid = {
         timeline: [bank_info_trial],
         conditional_function: function(){
 
@@ -401,7 +406,7 @@
     timeline = timeline.concat(trials)
     
     // timeline = timeline.concat([before_bank_info_trial, bank_info_trial, last_page_trial])
-    timeline = timeline.concat([before_bank_info_trial, if_node, last_page_trial])
+    timeline = timeline.concat([before_bank_info_trial, if_to_be_paid, last_page_trial])
 
 
     const jsPsych = initJsPsych({

@@ -7,6 +7,8 @@ import json
 app = Flask(__name__, static_folder='static/')
 CORS(app)
 
+SURVEY_LIMIT = 20
+
 # 檢查有沒有data資料夾
 if not os.path.isdir('./data'):
     os.mkdir('./data')
@@ -143,7 +145,14 @@ def save_data():
 
 @app.route("/survey/<survey_id>", methods=['GET'])
 def survey(survey_id):
-    return render_template(f'survey_{survey_id}.html')
+
+    dirs = os.listdir(f'./data/{survey_id}')
+    number = len(list(filter(lambda x: x.startswith('2'), dirs)))
+
+    if number < SURVEY_LIMIT:
+        return render_template(f'survey_{survey_id}.html')
+    else:
+        return render_template('full.html')
 
 @app.route("/results", methods=['GET'])
 def results():
